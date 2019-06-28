@@ -27,7 +27,7 @@ jobs:
             make image-build
             devimage=$(make image-name)
 
-            export DBTAG_FLAVOUR=$(CIRCLE_JOB)
+            export DBTAG_FLAVOUR=$CIRCLE_JOB
             docker run -t $devimage go version | sed -n 's/.*go\(.*\) .*/\1/p'
  
       - run:
