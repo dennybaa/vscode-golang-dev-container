@@ -13,21 +13,23 @@ env: &env
 workflows:
   version: 2.0
   default:
-    jobs:
-      - alpine:
-          <<: *env
-          steps:
-            - checkout
-            - run:
-                name: Build
-                command: |
-                  DOCKERFILE=alpine.Dockerfile TAG="${CIRCLE_TAG#v}-${CIRCLE_JOB}" \
-                    make image-build
+    - alpine
 
-            - run:
-                name: Publish
-                command: |
-                  # skip publish when non a non-realease tag or branch met
-                  if [[ $CIRCLE_TAG != "" ]] && ! [[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
+jobs:
+  alpine:
+    <<: *env
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            DOCKERFILE=alpine.Dockerfile TAG="${CIRCLE_TAG#v}-${CIRCLE_JOB}" \
+              make image-build
 
-                  echo Publishing Yo
+      - run:
+          name: Publish
+          command: |
+            # skip publish when non a non-realease tag or branch met
+            if [[ $CIRCLE_TAG != "" ]] && ! [[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
+
+            echo Publishing Yo
