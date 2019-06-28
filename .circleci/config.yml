@@ -5,7 +5,8 @@ executors:
     docker:
       - image: stackfeed/circle-shell
 
-env: &env
+common: &common
+  executor: default
   environment:
     PUBLISH_NAMESPACE: dennybaa
     IMAGE: golang-dev
@@ -18,7 +19,7 @@ workflows:
 
 jobs:
   alpine:
-    <<: *env
+    <<: *common
     steps:
       - checkout
       - run:
