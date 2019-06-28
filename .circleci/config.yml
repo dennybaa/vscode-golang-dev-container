@@ -1,0 +1,33 @@
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: stackfeed/circle-shell
+
+env: &env
+  environment:
+    PUBLISH_NAMESPACE: dennybaa
+    IMAGE: golang-dev
+
+workflows:
+  version: 2.0
+  default:
+    jobs:
+      - alpine:
+          <<: *env
+          steps:
+            - checkout
+            - run:
+                name: Build
+                command: |
+                  DOCKERFILE=alpine.Dockerfile TAG="${CIRCLE_TAG#v}-${CIRCLE_JOB}" \
+                    make image-build
+
+            - run:
+                name: Publish
+                command: |
+                  # skip publish when non a non-realease tag or branch met
+                  if [[ $CIRCLE_TAG != "" ]] && ! [[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
+
+                  echo Publishing Yo
