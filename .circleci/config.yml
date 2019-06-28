@@ -17,6 +17,7 @@ jobs:
     environment:
       DBTAG_FLAVOUR=alpine
       DBTAG_LATEST=1.12
+      DOCKERFILE=alpine.Dockerfile
 
     steps:
       - checkout
