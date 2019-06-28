@@ -11,10 +11,14 @@ workflows:
     jobs:
       - alpine
 
+commonEnv: &commonEnv
+  PUSH_NAMESPACES: dennybaa
+
 jobs:
   alpine:
     executor: default
     environment:
+      <<: *commonEnv
       DBTAG_FLAVOUR: alpine
       DBTAG_LATEST: 1.12
       DOCKERFILE: alpine.Dockerfile
@@ -25,12 +29,13 @@ jobs:
       - run:
           name: Build
           command: |
-            make image-build
-            devimage=$(make image-name)
-
             export DBTAG_FLAVOUR=$CIRCLE_JOB
-            docker run -t $devimage go version | sed -n 's/.*go\(.*\) .*/\1/p'
- 
+            curl -sL https://git.io/dbtag | bash -s -- /usr/local/bin
+
+            docker image build -t golang-dev -f ${DOCKERFILE} ./
+            semver=$(docker run -t $devimage go version | sed -n 's/.*go\(.*\) .*/\1/p')
+            dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
+
       - run:
           name: Publish
           command: |
