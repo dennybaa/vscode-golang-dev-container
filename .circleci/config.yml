@@ -30,8 +30,7 @@ jobs:
           name: Build
           command: |
             export DBTAG_FLAVOUR=$CIRCLE_JOB
-            set -x
-            curl -sL https://git.io/dbtag | bash -s -- /usr/local/bin
+            curl -sL https://raw.githubusercontent.com/stackfeed/dbtag/getv/get.sh | bash -s -- /usr/local/bin
 
             docker image build -t golang-dev -f ${DOCKERFILE} ./
             semver=$(docker run -t $devimage go version | sed -n 's/.*go\(.*\) .*/\1/p')
