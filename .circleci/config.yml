@@ -27,7 +27,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-          curl -sL https://git.io/dbtag | cat | bash -s -- /usr/local/bin && \
+          curl -sL https://git.io/dbtag | cat | bash -s -- .build/bin && \
             echo "export PATH=\$PATH:\$HOME/project/.build/bin" >> $BASH_ENV
 
       - run:
