@@ -29,8 +29,7 @@ jobs:
       - run:
           name: Install tools
           command: |
-            curl -sL https://git.io/dbtag | bash -s -- .build/bin && \
-            echo "export PATH=\$PATH:\$HOME/project/.build/bin" >> $BASH_ENV
+            curl -sL https://git.io/dbtag | sudo bash -s -- /usr/local/bin
 
       - run:
           name: Build
@@ -42,7 +41,8 @@ jobs:
             ls -lh $(which dbtag)
             head -n1 $(which dbtag)
 
-            dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
+            dbtag -help
+            # dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
 
       - run:
           name: Publish
