@@ -35,18 +35,14 @@ jobs:
           name: Build
           command: |
             export DBTAG_FLAVOUR=$CIRCLE_JOB
-
-            # docker image build -t golang-dev -f ${DOCKERFILE} ./
-            # semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
-
-            dbtag -help
-            # dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
+            docker image build -t golang-dev -f ${DOCKERFILE} ./
 
       - run:
           name: Publish
           command: |
-            # skip publish when non a non-realease tag or branch met
-            echo $CIRCLE_TAG
-            if [[ $CIRCLE_TAG == "" ]] || ![[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
+            # # skip publish when non a non-realease tag or branch met
+            # if [[ $CIRCLE_TAG == "" ]] || ![[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
 
+            semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
+            dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
             echo Publishing Yo
