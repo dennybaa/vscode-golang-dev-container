@@ -26,22 +26,21 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: |
-          curl -sL https://git.io/dbtag | cat | bash -s -- .build/bin && \
+      - run:
+          name: Install tools
+          command: |
+            curl -sL https://git.io/dbtag | bash -s -- .build/bin && \
             echo "export PATH=\$PATH:\$HOME/project/.build/bin" >> $BASH_ENV
 
       - run:
           name: Build
           command: |
             export DBTAG_FLAVOUR=$CIRCLE_JOB
-            tail -n1 $BASH_ENV
 
             docker image build -t golang-dev -f ${DOCKERFILE} ./
             semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
 
-            which dbtag
-            ls -lh $(which dbtag)
-            # ./dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
+            dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
 
       - run:
           name: Publish
