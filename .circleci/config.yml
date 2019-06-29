@@ -13,6 +13,7 @@ workflows:
 
 commonEnv: &commonEnv
   PUSH_NAMESPACES: dennybaa
+  IMAGE: vscode-golang-dev
 
 jobs:
   alpine:
@@ -20,7 +21,7 @@ jobs:
     environment:
       <<: *commonEnv
       DBTAG_FLAVOUR: alpine
-      DBTAG_LATEST: 1.12
+      DBTAG_LATEST: alpine:1.12
       DOCKERFILE: alpine.Dockerfile
 
     steps:
@@ -34,8 +35,7 @@ jobs:
       - run:
           name: Build
           command: |
-            export DBTAG_FLAVOUR=$CIRCLE_JOB
-            docker image build -t golang-dev -f ${DOCKERFILE} ./
+            docker image build -t $IMAGE -f $DOCKERFILE ./
 
       - run:
           name: Publish
@@ -43,6 +43,6 @@ jobs:
             # # skip publish when non a non-realease tag or branch met
             # if [[ $CIRCLE_TAG == "" ]] || ![[ $CIRCLE_TAG =~ ^v[0-9]. ]]; then exit 0; fi
 
-            semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
-            dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
+            semver=$(docker run -t $IMAGE go version | sed -n 's/.*go\(.*\) .*/\1/p')
+            dbtag -flavour=$CIRCLE_JOB $semver $IMAGE ${PUSH_NAMESPACES}/${IMAGE}
             echo Publishing Yo
