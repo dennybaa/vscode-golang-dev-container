@@ -37,8 +37,10 @@ jobs:
           command: |
             export DBTAG_FLAVOUR=$CIRCLE_JOB
 
-            docker image build -t golang-dev -f ${DOCKERFILE} ./
-            semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
+            # docker image build -t golang-dev -f ${DOCKERFILE} ./
+            # semver=$(docker run -t golang-dev go version | sed -n 's/.*go\(.*\) .*/\1/p')
+            ls -lh $(which dbtag)
+            head -n1 $(which dbtag)
 
             dbtag $semver golang-dev ${PUSH_NAMESPACES}/golang-dev
 
